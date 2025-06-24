@@ -1,0 +1,3 @@
+rootProject.name = 'CrCDepedencyInjection'
+include 'app'
+include 'test'
