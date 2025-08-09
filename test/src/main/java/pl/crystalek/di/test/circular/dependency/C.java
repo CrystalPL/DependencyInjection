@@ -1,7 +1,7 @@
 package pl.crystalek.di.test.circular.dependency;
 
 import lombok.AllArgsConstructor;
-import pl.crystalek.di.Injectable;
+import pl.crystalek.di.annotations.Injectable;
 
 @Injectable
 @AllArgsConstructor

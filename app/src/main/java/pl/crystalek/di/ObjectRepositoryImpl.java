@@ -17,29 +17,34 @@ class ObjectRepositoryImpl implements ObjectRepository {
 
     @Override
     public void addObject(final @NonNull Class<?> clazz, final @NonNull Object object) {
-        if (!clazz.isAnnotationPresent(Injectable.class)) {
-            throw new IllegalArgumentException("Class " + clazz.getName() + " is not annotated with @Injectable");
-        }
-
         injectableObjectsRegistry.put(clazz, object);
     }
 
     @Override
-    public void addObject(final @NonNull Object object) throws IllegalArgumentException {
-        final Class<?> clazz = object.getClass();
-        if (!clazz.isAnnotationPresent(Injectable.class)) {
-            throw new IllegalArgumentException("Class " + clazz.getName() + " is not annotated with @Injectable");
-        }
-
-        injectableObjectsRegistry.put(clazz, object);
+    public void addObject(final @NonNull Object object) {
+        addObject(object.getClass(), object);
     }
 
     @Override
     public <T> T getObjectByClassName(final @NonNull Class<T> clazz) {
-        return (T) injectableObjectsRegistry.get(clazz);
+        Object object = injectableObjectsRegistry.get(clazz);
+        if (object == null) {
+            object = findObjectInRootClass(clazz);
+        }
+
+        return (T) object;
     }
 
-    boolean isObjectExists(final Class<?> clazz) {
+    private Object findObjectInRootClass(final Class<?> clazz) {
+        return injectableObjectsRegistry.entrySet().stream()
+                .filter(entry -> clazz.isAssignableFrom(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
+    }
+
+    @Override
+    public boolean isObjectExists(final Class<?> clazz) {
         return injectableObjectsRegistry.containsKey(clazz);
     }
 }

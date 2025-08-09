@@ -18,8 +18,7 @@ public interface ObjectRepository {
      *
      * @param clazz  The class type under which the object will be available in the repository
      * @param object The object instance to add
-     * @throws NullPointerException     if any parameter is null
-     * @throws IllegalArgumentException if the class is not marked with {@link Injectable}
+     * @throws NullPointerException if any parameter is null
      */
     void addObject(@NonNull final Class<?> clazz, @NonNull final Object object) throws IllegalArgumentException;
 
@@ -27,8 +26,7 @@ public interface ObjectRepository {
      * Adds an object to the repository using its actual class type.
      *
      * @param object The object instance to add
-     * @throws NullPointerException     if the object is null
-     * @throws IllegalArgumentException if the class is not marked with {@link Injectable}
+     * @throws NullPointerException if the object is null
      */
     void addObject(@NonNull final Object object) throws IllegalArgumentException;
 
@@ -48,4 +46,12 @@ public interface ObjectRepository {
      * @return A map where the key is the class type and the value is the object instance
      */
     Map<Class<?>, Object> getInjectableObjectsRegistry();
+
+    /**
+     * Checks if an object for the specified class type exists in the repository.
+     *
+     * @param clazz The class type to check for existence
+     * @return true if an object for the specified class exists, false otherwise
+     */
+    boolean isObjectExists(Class<?> clazz);
 }

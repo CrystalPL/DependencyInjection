@@ -1,5 +1,8 @@
 package pl.crystalek.di;
 
+import pl.crystalek.di.annotations.Factory;
+import pl.crystalek.di.annotations.Injectable;
+
 import java.util.logging.Logger;
 
 /**

@@ -1,4 +1,4 @@
-package pl.crystalek.di;
+package pl.crystalek.di.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,9 +10,8 @@ import java.lang.annotation.Target;
  * which should be used by the dependency injection mechanism
  * to create object instances.
  * <p>
- * A method annotated with this annotation must be static and return an interface
- * that will be added to the DI container. The return type
- * must be an interface, not a concrete class. The method parameters will be automatically
+ * A method annotated with this annotation must be static and return an object
+ * that will be added to the DI container. The method parameters will be automatically
  * injected from the DI container.
  * <p>
  * Example:
@@ -32,4 +31,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Factory {
+
 }

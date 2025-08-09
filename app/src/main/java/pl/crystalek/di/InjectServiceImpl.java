@@ -4,32 +4,43 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import pl.crystalek.di.injector.Injector;
+import pl.crystalek.di.scanner.Scanner;
+import pl.crystalek.di.scanner.ScannerRepository;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 class InjectServiceImpl implements InjectService {
     @Getter
-    ObjectRepositoryImpl objectRepository = new ObjectRepositoryImpl();
+    ObjectRepository objectRepository = new ObjectRepositoryImpl();
+    ScannerRepository scannerRepository = new ScannerRepository();
     ClassLoader classLoader;
     String packageName;
     Logger logger;
 
     @Override
     public void injectObjects() {
+        final Set<Class<?>> classes = loadAllClasses();
+        scanClasses(classes);
+        inject();
+    }
+
+    private Set<Class<?>> loadAllClasses() {
         final InjectableClassLoader injectableClassLoader = new InjectableClassLoader(classLoader, packageName, logger);
-        final Set<Class<?>> classes = injectableClassLoader.loadClasses();
+        return injectableClassLoader.loadClasses();
+    }
 
-        final InjectableScanner injectableScanner = new InjectableScanner(classes, logger);
-        injectableScanner.scan();
-        final List<Class<?>> classesToInject = injectableScanner.getClassesToInject();
-        final List<Method> factoryMethodsToInject = injectableScanner.getFactoryMethodsToInject();
+    private void scanClasses(final Set<Class<?>> classes) {
+        final List<Scanner> scanners = Scanner.getScanners(classes, scannerRepository, logger);
+        scanners.forEach(Scanner::scan);
+    }
 
-        final ObjectCreator objectCreator = new ObjectCreator(objectRepository, classesToInject, factoryMethodsToInject, logger);
-        objectCreator.createAndInjectObjects();
+    private void inject() {
+        final List<Injector> injectors = Injector.getInjectors(objectRepository, scannerRepository, logger);
+        injectors.forEach(Injector::inject);
     }
 }

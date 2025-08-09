@@ -1,8 +1,8 @@
 package pl.crystalek.di;
 
-import lombok.extern.java.Log;
+import pl.crystalek.di.test.extensionObject.ExtensionC;
+import pl.crystalek.di.test.fields.TestField;
 
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class Main {
@@ -27,5 +27,25 @@ public class Main {
         System.out.println("---------------------------");
         final InjectService factoryDependencyService = InjectService.getInjectService(classLoader, "pl.crystalek.di.test.factory", logger);
         factoryDependencyService.injectObjects();
+
+        System.out.println("---------------------------");
+        final InjectService fieldDependencyService = InjectService.getInjectService(classLoader, "pl.crystalek.di.test.fields", logger);
+        final TestField testField = new TestField();
+        fieldDependencyService.getObjectRepository().addObject(testField);
+        fieldDependencyService.injectObjects();
+        System.out.println(testField.getTestingField());
+        System.out.println(fieldDependencyService.getObjectRepository().getInjectableObjectsRegistry());
+
+        System.out.println("---------------------------");
+        final InjectService circularFactoryTest = InjectService.getInjectService(classLoader, "pl.crystalek.di.test.circularFactory", logger);
+        circularFactoryTest.injectObjects();
+        System.out.println(circularFactoryTest.getObjectRepository().getInjectableObjectsRegistry());
+
+        System.out.println("---------------------------");
+        final InjectService extensionObjectTest = InjectService.getInjectService(classLoader, "pl.crystalek.di.test.extensionObject", logger);
+        extensionObjectTest.injectObjects();
+        ExtensionC c = extensionObjectTest.getObjectRepository().getObjectByClassName(ExtensionC.class);
+        System.out.println(c.toString());
     }
+
 }

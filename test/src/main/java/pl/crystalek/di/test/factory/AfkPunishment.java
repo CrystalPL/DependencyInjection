@@ -1,9 +1,7 @@
 package pl.crystalek.di.test.factory;
 
-import pl.crystalek.di.Factory;
-import pl.crystalek.di.Injectable;
+import pl.crystalek.di.annotations.Factory;
 
-@Injectable
 public interface AfkPunishment {
 
     @Factory
